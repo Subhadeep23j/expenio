@@ -196,6 +196,109 @@
             gap: .25rem;
         }
 
+        .nav-auth {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text);
+            cursor: pointer;
+            transition: border-color .2s, background .2s;
+        }
+
+        .mobile-menu-btn:hover {
+            border-color: rgba(255, 255, 255, .2);
+            background: rgba(255, 255, 255, .04);
+        }
+
+        .mobile-menu-btn .icon-close {
+            display: none;
+        }
+
+        .mobile-menu-btn[aria-expanded="true"] .icon-menu {
+            display: none;
+        }
+
+        .mobile-menu-btn[aria-expanded="true"] .icon-close {
+            display: inline;
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 72px;
+            left: 1rem;
+            right: 1rem;
+            z-index: 99;
+            background: rgba(20, 18, 16, .97);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, .45);
+            padding: .85rem;
+            flex-direction: column;
+            gap: .75rem;
+            opacity: 0;
+            transform: translateY(-8px);
+            pointer-events: none;
+            transition: opacity .2s ease, transform .2s ease;
+        }
+
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: .2rem;
+        }
+
+        .mobile-nav-links a {
+            display: block;
+            text-decoration: none;
+            color: rgba(237, 231, 213, .82);
+            font-size: .9rem;
+            padding: .7rem .75rem;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            transition: background .15s, border-color .15s, color .15s;
+        }
+
+        .mobile-nav-links a:hover {
+            background: rgba(255, 255, 255, .04);
+            border-color: rgba(255, 255, 255, .08);
+            color: var(--text);
+        }
+
+        .mobile-nav-auth {
+            display: grid;
+            gap: .55rem;
+            padding-top: .7rem;
+            border-top: 1px solid rgba(255, 255, 255, .06);
+        }
+
+        .mobile-nav-auth .btn {
+            width: 100%;
+            justify-content: center;
+            padding: .68rem .95rem;
+            font-size: .84rem;
+        }
+
+        .mobile-nav.is-open {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
         .nav-links a {
             padding: .45rem .85rem;
             font-size: .82rem;
@@ -813,12 +916,15 @@
             }
 
             .nav-auth {
-                gap: .45rem !important;
+                display: none;
             }
 
-            .nav-auth .btn {
-                padding: .42rem .75rem !important;
-                font-size: .74rem !important;
+            .mobile-menu-btn {
+                display: inline-flex;
+            }
+
+            .mobile-nav {
+                display: flex;
             }
 
             .brand-name {
@@ -829,6 +935,8 @@
                 grid-template-columns: 1fr;
                 gap: 3rem;
                 padding-top: 7rem;
+                padding-left: 1.25rem;
+                padding-right: 1.25rem;
             }
 
             .hero-visual {
@@ -843,19 +951,56 @@
         @media (max-width: 600px) {
             nav#navbar {
                 padding: 1rem 1.25rem;
+                gap: .65rem;
+            }
+
+            .mobile-nav {
+                top: 68px;
+                left: .75rem;
+                right: .75rem;
             }
 
             .brand-name {
                 font-size: 1.05rem;
             }
 
-            .nav-auth .btn {
-                padding: .4rem .6rem !important;
-                font-size: .72rem !important;
+            .brand-icon {
+                width: 30px;
+                height: 30px;
             }
 
             #hero {
                 padding: 6.5rem 1.25rem 3rem;
+            }
+
+            .hero-sub {
+                max-width: 100%;
+                margin-bottom: 2rem;
+            }
+
+            .hero-cta {
+                gap: .75rem;
+            }
+
+            .hero-cta .btn,
+            .cta-btns .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .hero-stat-row {
+                margin-top: 2rem;
+                padding-top: 1.5rem;
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+
+            .hero-stat {
+                min-width: calc(50% - .5rem);
+            }
+
+            .stat-divider {
+                display: none;
             }
 
             .features-grid {
@@ -868,6 +1013,21 @@
                 padding-right: 1.25rem;
             }
 
+            #cta {
+                margin: 2rem 1.25rem 3rem;
+                padding-top: 3rem;
+                padding-bottom: 3rem;
+            }
+
+            .cta-sub {
+                margin-bottom: 1.75rem;
+            }
+
+            .footer-links {
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+
             footer {
                 padding: 1.5rem 1.25rem;
                 flex-direction: column;
@@ -876,8 +1036,26 @@
         }
 
         @media (max-width: 420px) {
-            .nav-auth .btn-ghost {
-                display: none;
+            nav#navbar {
+                padding: .9rem .9rem;
+            }
+
+            .mobile-nav {
+                top: 64px;
+                left: .55rem;
+                right: .55rem;
+            }
+
+            .brand-name {
+                font-size: .98rem;
+            }
+
+            .hero-stat {
+                min-width: 100%;
+            }
+
+            .hero-title {
+                font-size: clamp(2.2rem, 11vw, 2.8rem);
             }
         }
     </style>
@@ -900,13 +1078,13 @@
             <span class="brand-name">Expenio</span>
         </a>
 
-        <div class="nav-links" style="display:flex;align-items:center;gap:.25rem;">
+        <div class="nav-links">
             <a href="#features">Features</a>
             <a href="#pricing">Pricing</a>
             <a href="#about">About</a>
         </div>
 
-        <div class="nav-auth" style="display:flex;align-items:center;gap:.6rem;">
+        <div class="nav-auth">
             @if (Route::has('login'))
                 @auth
                     <a href="{{ url('/dashboard') }}" class="btn btn-ghost" style="padding:.45rem .95rem;font-size:.82rem">
@@ -925,7 +1103,42 @@
                 @endauth
             @endif
         </div>
+
+        <button id="mobile-menu-btn" class="mobile-menu-btn" type="button" aria-label="Toggle navigation"
+            aria-controls="mobile-nav" aria-expanded="false">
+            <svg class="icon-menu" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+            <svg class="icon-close" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
     </nav>
+
+    <div id="mobile-nav" class="mobile-nav" aria-hidden="true">
+        <div class="mobile-nav-links">
+            <a href="#features">Features</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#about">About</a>
+        </div>
+        @if (Route::has('login'))
+            <div class="mobile-nav-auth">
+                @auth
+                    <a href="{{ url('/dashboard') }}" class="btn btn-ghost">Dashboard</a>
+                @else
+                    <a href="{{ route('login') }}" class="btn btn-ghost">Sign In</a>
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="btn btn-primary">Get Started</a>
+                    @endif
+                @endauth
+            </div>
+        @endif
+    </div>
 
 
     <!-- ═══════════════════════════════════════════
@@ -956,8 +1169,9 @@
                     @if (Route::has('register'))
                         <a href="{{ route('register') }}" class="btn btn-primary btn-large">
                             Start for free
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round">
                                 <path d="M5 12h14" />
                                 <path d="m12 5 7 7-7 7" />
                             </svg>
@@ -1246,6 +1460,58 @@
             <a href="#">GitHub</a>
         </div>
     </footer>
+
+    <script>
+        (function() {
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const mobileNav = document.getElementById('mobile-nav');
+
+            if (!menuBtn || !mobileNav) return;
+
+            const closeMenu = function() {
+                mobileNav.classList.remove('is-open');
+                mobileNav.setAttribute('aria-hidden', 'true');
+                menuBtn.setAttribute('aria-expanded', 'false');
+            };
+
+            const openMenu = function() {
+                mobileNav.classList.add('is-open');
+                mobileNav.setAttribute('aria-hidden', 'false');
+                menuBtn.setAttribute('aria-expanded', 'true');
+            };
+
+            menuBtn.addEventListener('click', function() {
+                const isOpen = mobileNav.classList.contains('is-open');
+                if (isOpen) {
+                    closeMenu();
+                } else {
+                    openMenu();
+                }
+            });
+
+            mobileNav.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    closeMenu();
+                });
+            });
+
+            document.addEventListener('click', function(event) {
+                if (!mobileNav.classList.contains('is-open')) return;
+
+                const clickedInsideMenu = mobileNav.contains(event.target);
+                const clickedMenuButton = menuBtn.contains(event.target);
+                if (!clickedInsideMenu && !clickedMenuButton) {
+                    closeMenu();
+                }
+            });
+
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 900) {
+                    closeMenu();
+                }
+            });
+        })();
+    </script>
 
 </body>
 

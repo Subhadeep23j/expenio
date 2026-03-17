@@ -157,7 +157,7 @@
             </td>
             <td>
                 <span class="label">Total Expense</span>
-                <span class="value">₹{{ number_format($monthTotal, 2) }}</span>
+                <span class="value">Rs. {{ number_format($monthTotal, 2) }}</span>
             </td>
         </tr>
     </table>
@@ -188,7 +188,7 @@
                                 <span
                                     class="badge {{ $expense->type === 'online' ? 'online' : 'offline' }}">{{ ucfirst($expense->type) }}</span>
                             </td>
-                            <td class="text-right">₹{{ number_format($expense->price, 2) }}</td>
+                            <td class="text-right">Rs. {{ number_format($expense->price, 2) }}</td>
                         </tr>
                     @endforeach
                 @endforeach
