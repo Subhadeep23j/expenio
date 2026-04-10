@@ -16,15 +16,19 @@ class BudgetController extends Controller
         $year = $today->year;
 
         $budget = $user->budgets()->where('month', $month)->where('year', $year)->first();
-        $monthSpent = $user->expenses()
+        $monthSpent = (float) $user->expenses()
             ->whereBetween('date', [$today->copy()->startOfMonth(), $today->copy()->endOfMonth()])
-            ->sum('price');
+            ->get()
+            ->sum(fn($expense) => (float) $expense->price);
 
         $pastBudgets = $user->budgets()->orderByDesc('year')->orderByDesc('month')->limit(12)->get()
             ->map(function ($b) use ($user) {
                 $start = Carbon::create($b->year, $b->month, 1)->startOfMonth();
                 $end = $start->copy()->endOfMonth();
-                $b->spent = $user->expenses()->whereBetween('date', [$start, $end])->sum('price');
+                $b->spent = (float) $user->expenses()
+                    ->whereBetween('date', [$start, $end])
+                    ->get()
+                    ->sum(fn($expense) => (float) $expense->price);
                 return $b;
             });
 

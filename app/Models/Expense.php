@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Casts\EncryptedOrPlainDecimal;
+use App\Casts\EncryptedOrPlainString;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -18,7 +20,8 @@ class Expense extends Model
     protected function casts(): array
     {
         return [
-            'price' => 'decimal:2',
+            'product_name' => EncryptedOrPlainString::class,
+            'price' => EncryptedOrPlainDecimal::class . ':2',
             'date' => 'date',
         ];
     }

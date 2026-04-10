@@ -14,20 +14,42 @@ class DashboardController extends Controller
         $monthStart = $today->copy()->startOfMonth();
         $monthEnd = $today->copy()->endOfMonth();
 
-        $todayTotal = $user->expenses()
-            ->whereDate('date', $today)
-            ->sum('price');
-
-        $monthTotal = $user->expenses()
+        $monthExpenses = $user->expenses()
             ->whereBetween('date', [$monthStart, $monthEnd])
-            ->sum('price');
+            ->get();
 
-        $monthCount = $user->expenses()
+        $monthIncomes = $user->incomes()
             ->whereBetween('date', [$monthStart, $monthEnd])
-            ->count();
+            ->get();
 
-        $daysElapsed = $today->day;
-        $dailyAverage = $daysElapsed > 0 ? $monthTotal / $daysElapsed : 0;
+        $monthTotal = (float) $monthExpenses
+            ->sum(fn($expense) => (float) $expense->price);
+
+        $monthIncome = (float) $monthIncomes
+            ->sum(fn($income) => (float) $income->amount);
+
+        $dailyExpense = (float) $monthExpenses
+            ->filter(fn($expense) => $expense->date->isSameDay($today))
+            ->sum(fn($expense) => (float) $expense->price);
+
+        $dailyIncome = (float) $monthIncomes
+            ->filter(fn($income) => $income->date->isSameDay($today))
+            ->sum(fn($income) => (float) $income->amount);
+
+        $dailySavings = $dailyIncome - $dailyExpense;
+
+        $monthlySavings = $monthIncome - $monthTotal;
+
+        $monthCount = $monthExpenses->count();
+
+        $currentMonthBudget = $user->budgets()
+            ->where('month', $today->month)
+            ->where('year', $today->year)
+            ->first();
+
+        $hasBudget = !is_null($currentMonthBudget);
+        $budgetAmount = $hasBudget ? (float) $currentMonthBudget->amount : 0.0;
+        $remainingMoney = $hasBudget ? ($budgetAmount - $monthTotal) : null;
 
         $recentExpenses = $user->expenses()
             ->orderByDesc('date')
@@ -36,12 +58,9 @@ class DashboardController extends Controller
             ->get();
 
         // Daily totals for chart
-        $dailyTotals = $user->expenses()
-            ->whereBetween('date', [$monthStart, $monthEnd])
-            ->selectRaw('date, SUM(price) as total')
-            ->groupBy('date')
-            ->orderBy('date')
-            ->pluck('total', 'date')
+        $dailyTotals = $monthExpenses
+            ->groupBy(fn($expense) => $expense->date->toDateString())
+            ->map(fn($dayExpenses) => (float) $dayExpenses->sum(fn($expense) => (float) $expense->price))
             ->toArray();
 
         $chartLabels = [];
@@ -53,10 +72,15 @@ class DashboardController extends Controller
         }
 
         return view('dashboard', compact(
-            'todayTotal',
             'monthTotal',
+            'monthIncome',
             'monthCount',
-            'dailyAverage',
+            'dailyIncome',
+            'dailySavings',
+            'monthlySavings',
+            'hasBudget',
+            'budgetAmount',
+            'remainingMoney',
             'recentExpenses',
             'chartLabels',
             'chartData',

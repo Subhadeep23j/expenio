@@ -169,6 +169,134 @@
             color: #1a3a7a;
         }
 
+        .notif-wrap {
+            position: relative;
+        }
+
+        .notif-toggle {
+            color: var(--muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 8px;
+            transition: background 0.15s;
+            position: relative;
+            line-height: 0;
+        }
+
+        .notif-toggle:hover {
+            background: var(--border);
+        }
+
+        .notif-toggle.open {
+            background: var(--border);
+        }
+
+        .notif-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 999px;
+            padding: 0 4px;
+            background: var(--danger);
+            color: #fff;
+            font-size: 0.62rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #fff;
+            line-height: 1;
+        }
+
+        .notif-menu {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            width: min(340px, 90vw);
+            max-height: 380px;
+            overflow-y: auto;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+            display: none;
+            z-index: 90;
+        }
+
+        .notif-menu.open {
+            display: block;
+        }
+
+        .notif-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0.9rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .notif-head-count {
+            font-size: 0.68rem;
+            color: var(--muted);
+            font-weight: 500;
+            letter-spacing: 0.04em;
+        }
+
+        .notif-empty {
+            padding: 1rem 0.9rem;
+            font-size: 0.82rem;
+            color: var(--muted);
+        }
+
+        .notif-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.55rem;
+            padding: 0.75rem 0.9rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            font-size: 0.82rem;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        .notif-item:last-child {
+            border-bottom: none;
+        }
+
+        .notif-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-top: 0.33rem;
+            flex-shrink: 0;
+            background: var(--muted);
+        }
+
+        .notif-item-success .notif-dot {
+            background: #4caf70;
+        }
+
+        .notif-item-error .notif-dot {
+            background: #e05a42;
+        }
+
+        .notif-item-warning .notif-dot {
+            background: #e0a830;
+        }
+
+        .notif-item-info .notif-dot {
+            background: #5090e0;
+        }
+
         /* ══════════════════════════════════════════════
            SHARED RESPONSIVE COMPONENT CLASSES
         ══════════════════════════════════════════════ */
@@ -894,6 +1022,110 @@
 ═══════════════════════════════════════════ -->
     <div id="main-wrap">
 
+        @php
+            $topbarNotifications = collect();
+            $skipExpenseSuccessPatterns = [
+                '/^Expense added successfully\.$/i',
+                '/^Expense saved\. Add the next one\.$/i',
+                '/^Expense deleted\.$/i',
+                '/^\d+ expense(?:s)? added successfully\.$/i',
+            ];
+
+            foreach (['success', 'error', 'warning', 'info'] as $type) {
+                $message = session($type);
+
+                if (!$message) {
+                    continue;
+                }
+
+                $shouldSkip =
+                    $type === 'success' &&
+                    collect($skipExpenseSuccessPatterns)->contains(
+                        fn($pattern) => preg_match($pattern, (string) $message) === 1,
+                    );
+
+                if (!$shouldSkip) {
+                    $topbarNotifications->push([
+                        'type' => $type,
+                        'message' => $message,
+                    ]);
+                }
+            }
+
+            if ($errors->any()) {
+                foreach ($errors->all() as $errorMessage) {
+                    $topbarNotifications->push([
+                        'type' => 'error',
+                        'message' => $errorMessage,
+                    ]);
+                }
+            }
+
+            if (auth()->check()) {
+                $notifyDate = \Carbon\Carbon::today();
+                $notifyMonthStart = $notifyDate->copy()->startOfMonth();
+                $notifyMonthEnd = $notifyDate->copy()->endOfMonth();
+
+                $monthBudget = auth()
+                    ->user()
+                    ->budgets()
+                    ->where('month', $notifyDate->month)
+                    ->where('year', $notifyDate->year)
+                    ->first();
+
+                if ($monthBudget) {
+                    $budgetAmount = (float) $monthBudget->amount;
+
+                    if ($budgetAmount > 0) {
+                        $monthSpent = (float) auth()
+                            ->user()
+                            ->expenses()
+                            ->whereBetween('date', [$notifyMonthStart, $notifyMonthEnd])
+                            ->get()
+                            ->sum(fn($expense) => (float) $expense->price);
+
+                        $budgetUsage = ($monthSpent / $budgetAmount) * 100;
+
+                        if ($budgetUsage >= 90) {
+                            if ($budgetUsage >= 100) {
+                                $budgetNotice =
+                                    'Budget warning for ' .
+                                    $notifyDate->format('F Y') .
+                                    ': You have used ' .
+                                    number_format($budgetUsage, 1) .
+                                    '% and exceeded budget by Rs. ' .
+                                    number_format(abs($monthSpent - $budgetAmount), 2) .
+                                    '.';
+                            } else {
+                                $budgetNotice =
+                                    'Budget warning for ' .
+                                    $notifyDate->format('F Y') .
+                                    ': You have used ' .
+                                    number_format($budgetUsage, 1) .
+                                    '% of your budget. Remaining Rs. ' .
+                                    number_format($budgetAmount - $monthSpent, 2) .
+                                    '.';
+                            }
+
+                            $alreadyExists = $topbarNotifications->contains(
+                                fn($notification) => $notification['type'] === 'warning' &&
+                                    $notification['message'] === $budgetNotice,
+                            );
+
+                            if (!$alreadyExists) {
+                                $topbarNotifications->push([
+                                    'type' => 'warning',
+                                    'message' => $budgetNotice,
+                                ]);
+                            }
+                        }
+                    }
+                }
+            }
+
+            $topbarNotificationCount = $topbarNotifications->count();
+        @endphp
+
         {{-- ── Top Bar ── --}}
         <header id="topbar">
 
@@ -926,16 +1158,41 @@
             @yield('topbar-actions')
 
             {{-- Notification bell --}}
-            <button title="Notifications" class="topbar-icon-btn"
-                style="color:var(--muted);background:none;border:none;cursor:pointer;
-                       padding:6px;border-radius:8px;transition:background .15s"
-                onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='transparent'">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                </svg>
-            </button>
+            <div class="notif-wrap" id="topbar-notif-wrap">
+                <button title="Notifications" type="button" class="notif-toggle" id="topbar-notif-toggle"
+                    aria-expanded="false" aria-controls="topbar-notif-menu" aria-haspopup="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                    </svg>
+
+                    @if ($topbarNotificationCount > 0)
+                        <span
+                            class="notif-badge">{{ $topbarNotificationCount > 9 ? '9+' : $topbarNotificationCount }}</span>
+                    @endif
+                </button>
+
+                <div id="topbar-notif-menu" class="notif-menu" role="menu"
+                    data-autoshow="{{ $topbarNotificationCount > 0 ? '1' : '0' }}">
+                    <div class="notif-head">
+                        <span>Notifications</span>
+                        <span class="notif-head-count">{{ $topbarNotificationCount }}
+                            item{{ $topbarNotificationCount === 1 ? '' : 's' }}</span>
+                    </div>
+
+                    @if ($topbarNotificationCount === 0)
+                        <div class="notif-empty">No notifications.</div>
+                    @else
+                        @foreach ($topbarNotifications as $notification)
+                            <div class="notif-item notif-item-{{ $notification['type'] }}">
+                                <span class="notif-dot"></span>
+                                <span>{{ $notification['message'] }}</span>
+                            </div>
+                        @endforeach
+                    @endif
+                </div>
+            </div>
 
             {{-- Login button (only shown when not authenticated) --}}
             @guest
@@ -956,28 +1213,3 @@
             @endguest
 
         </header>
-
-        {{-- ── Flash Messages ── --}}
-        @if (session('success') || session('error') || session('warning') || session('info') || $errors->any())
-            <div style="padding: 1.25rem 1.75rem 0;">
-                @if (session('success'))
-                    <div class="flash flash-success">✓ &nbsp;{{ session('success') }}</div>
-                @endif
-                @if (session('error'))
-                    <div class="flash flash-error">✕ &nbsp;{{ session('error') }}</div>
-                @endif
-                @if (session('warning'))
-                    <div class="flash flash-warning">⚠ &nbsp;{{ session('warning') }}</div>
-                @endif
-                @if (session('info'))
-                    <div class="flash flash-info">ℹ &nbsp;{{ session('info') }}</div>
-                @endif
-                @if ($errors->any())
-                    <div class="flash flash-error">
-                        @foreach ($errors->all() as $error)
-                            <div>✕ &nbsp;{{ $error }}</div>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
-        @endif

@@ -36,6 +36,57 @@
         });
     </script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const notifWrap = document.getElementById('topbar-notif-wrap');
+            const notifToggle = document.getElementById('topbar-notif-toggle');
+            const notifMenu = document.getElementById('topbar-notif-menu');
+
+            if (!notifWrap || !notifToggle || !notifMenu) {
+                return;
+            }
+
+            const openMenu = () => {
+                notifMenu.classList.add('open');
+                notifToggle.classList.add('open');
+                notifToggle.setAttribute('aria-expanded', 'true');
+            };
+
+            const closeMenu = () => {
+                notifMenu.classList.remove('open');
+                notifToggle.classList.remove('open');
+                notifToggle.setAttribute('aria-expanded', 'false');
+            };
+
+            notifToggle.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (notifMenu.classList.contains('open')) {
+                    closeMenu();
+                } else {
+                    openMenu();
+                }
+            });
+
+            document.addEventListener('click', function(event) {
+                if (!notifWrap.contains(event.target)) {
+                    closeMenu();
+                }
+            });
+
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    closeMenu();
+                }
+            });
+
+            if (notifMenu.dataset.autoshow === '1') {
+                openMenu();
+            }
+        });
+    </script>
+
     @stack('scripts')
     </body>
 

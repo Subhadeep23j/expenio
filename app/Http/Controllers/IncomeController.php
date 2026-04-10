@@ -15,13 +15,16 @@ class IncomeController extends Controller
         $monthStart = $today->copy()->startOfMonth();
         $monthEnd = $today->copy()->endOfMonth();
 
-        $monthTotal = $user->incomes()->whereBetween('date', [$monthStart, $monthEnd])->sum('amount');
-        $allTimeTotal = $user->incomes()->sum('amount');
-
         $incomes = $user->incomes()
             ->whereBetween('date', [$monthStart, $monthEnd])
             ->orderByDesc('date')->orderByDesc('created_at')
             ->get();
+
+        $monthTotal = (float) $incomes->sum(fn($income) => (float) $income->amount);
+
+        $allTimeTotal = (float) $user->incomes()
+            ->get()
+            ->sum(fn($income) => (float) $income->amount);
 
         return view('income.index', compact('incomes', 'monthTotal', 'allTimeTotal', 'today'));
     }

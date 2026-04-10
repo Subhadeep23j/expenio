@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function () {
     // Expenses
     Route::get('/expenses', [ExpenseController::class, 'index'])->name('expenses.index');
     Route::post('/expenses', [ExpenseController::class, 'store'])->name('expenses.store');
+    Route::post('/expenses/bulk', [ExpenseController::class, 'storeBulk'])->name('expenses.store-bulk');
     Route::delete('/expenses/{expense}', [ExpenseController::class, 'destroy'])->name('expenses.destroy');
     Route::get('/expenses/chart-data', [ExpenseController::class, 'chartData'])->name('expenses.chart-data');
     Route::get('/expenses/export-pdf', [ExpenseController::class, 'exportPdf'])->name('expenses.export-pdf');
@@ -48,6 +49,7 @@ Route::middleware('auth')->group(function () {
     // Reports
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('/reports/export-pdf', [ReportController::class, 'exportPdf'])->name('reports.export-pdf');
+    Route::get('/reports/export-excel', [ReportController::class, 'exportExcel'])->name('reports.export-excel');
 
     // Categories
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');

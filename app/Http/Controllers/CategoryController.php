@@ -11,8 +11,9 @@ class CategoryController extends Controller
     {
         $categories = $request->user()->categories()
             ->withCount('expenses')
-            ->orderBy('name')
-            ->get();
+            ->get()
+            ->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)
+            ->values();
 
         return view('categories.index', compact('categories'));
     }
