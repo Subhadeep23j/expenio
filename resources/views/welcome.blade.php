@@ -4,7 +4,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Expenio — Take Control of Your Money</title>
+    <title>Expenio - Expense Tracker & Budget Management App</title>
+    <meta name="description"
+        content="Expenio is a smart expense tracker and budget management app to track daily expenses, monitor income, and manage personal finances easily.">
     <link rel="icon" type="image/png" href="{{ asset('Expenio_logo.png') }}">
 
     <!-- Fonts -->
@@ -1155,14 +1157,12 @@
                 </div>
 
                 <h1 class="hero-title anim-fade-up anim-delay-1">
-                    Every rupee<br>
-                    <em>accounted for,</em><br>
-                    always.
+                    Expenio – Smart Expense Tracker & Budget Manager
                 </h1>
 
                 <p class="hero-sub anim-fade-up anim-delay-2">
-                    Expenio gives you a clear, real-time picture of your finances — track spending, set budgets, and
-                    understand where your money actually goes.
+                    Expenio is your all-in-one expense tracker for budget management and personal finance, helping you
+                    track daily expenses, monitor spending habits, and stay in control of your money.
                 </p>
 
                 <div class="hero-cta anim-fade-up anim-delay-3">
@@ -1314,6 +1314,20 @@
         </div>
     </section>
 
+    <section id="about" style="padding: 1rem 2.5rem 0; max-width: 1200px; margin: 0 auto;">
+        <div style="text-align:center; margin-bottom:1rem;">
+            <div class="section-label">Expense tracker guide</div>
+            <h2 class="section-title" style="max-width:620px;margin:0 auto .75rem">
+                Track Your Daily Expenses Easily
+            </h2>
+            <p class="section-sub" style="margin:0 auto;max-width:640px;">
+                Expenio helps you record every transaction in seconds, organize spending by category, and manage your
+                budget with clear insights so you can improve cash flow, reduce unnecessary costs, and build better
+                personal finance habits every day.
+            </p>
+        </div>
+    </section>
+
 
     <!-- ═══════════════════════════════════════════
      FEATURES
@@ -1340,7 +1354,7 @@
                         <line x1="6" y1="20" x2="6" y2="14" />
                     </svg>
                 </div>
-                <div class="feature-title">Smart Analytics</div>
+                <div class="feature-title">Smart Expense Analytics</div>
                 <div class="feature-desc">Visual breakdowns of your spending patterns across categories, time periods,
                     and custom filters.</div>
             </div>
@@ -1353,7 +1367,7 @@
                             d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
                     </svg>
                 </div>
-                <div class="feature-title">Budget Envelopes</div>
+                <div class="feature-title">Budget Planning System</div>
                 <div class="feature-desc">Set monthly budgets per category and get notified before you overspend — not
                     after.</div>
             </div>
@@ -1366,7 +1380,7 @@
                         <polyline points="17 6 23 6 23 12" />
                     </svg>
                 </div>
-                <div class="feature-title">Income Tracking</div>
+                <div class="feature-title">Income & Expense Tracking</div>
                 <div class="feature-desc">Record multiple income sources and watch your net savings grow over time with
                     trend lines.</div>
             </div>
@@ -1395,7 +1409,7 @@
                         <polyline points="10 9 9 9 8 9" />
                     </svg>
                 </div>
-                <div class="feature-title">Export Reports</div>
+                <div class="feature-title">Financial Reports</div>
                 <div class="feature-desc">Generate monthly and yearly reports in PDF or CSV format, ready to share with
                     your accountant.</div>
             </div>
@@ -1446,6 +1460,36 @@
             @endif
         </div>
     </div>
+
+    <section style="padding: 0 2.5rem 4rem; max-width: 1200px; margin: 0 auto;">
+        <div style="text-align:center; margin-bottom:1.75rem;">
+            <div class="section-label">FAQ</div>
+            <h2 class="section-title" style="margin:0 auto .75rem;max-width:560px;">
+                Frequently Asked Questions
+            </h2>
+        </div>
+
+        <div class="features-grid" style="grid-template-columns:repeat(3, 1fr); margin-top:0;">
+            <div class="feature-card">
+                <div class="feature-title">What is Expenio?</div>
+                <div class="feature-desc">Expenio is a smart expense tracker and budget management app that helps you
+                    organize daily spending, monitor income, and improve your personal finance decisions.</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-title">How can I track my expenses?</div>
+                <div class="feature-desc">You can quickly add transactions, assign categories, and review real-time
+                    dashboards to track expenses, compare budgets, and understand where your money goes.</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-title">Is Expenio free?</div>
+                <div class="feature-desc">Yes, Expenio offers a free plan so you can start tracking expenses and
+                    managing
+                    budgets right away, with options to upgrade as your needs grow.</div>
+            </div>
+        </div>
+    </section>
 
 
     <!-- ═══════════════════════════════════════════
