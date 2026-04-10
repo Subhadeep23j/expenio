@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Expense;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ExpenseController extends Controller
 {
@@ -47,6 +49,10 @@ class ExpenseController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->has('expenses') && is_array($request->input('expenses'))) {
+            return $this->storeBulk($request);
+        }
+
         $validated = $request->validate([
             'product_name' => ['required', 'string', 'max:255'],
             'price' => ['required', 'numeric', 'min:0.01', 'max:9999999.99'],
@@ -54,7 +60,7 @@ class ExpenseController extends Controller
             'date' => ['required', 'date', 'before_or_equal:today'],
         ]);
 
-        $request->user()->expenses()->create($validated);
+        $this->persistExpenses($request->user(), [$validated]);
 
         $budgetWarningMessage = $this->budgetWarningMessage(
             $this->monthBudgetStatus($request->user(), Carbon::parse($validated['date']))
@@ -107,7 +113,7 @@ class ExpenseController extends Controller
             'expenses.*.date' => ['required', 'date', 'before_or_equal:today'],
         ]);
 
-        $request->user()->expenses()->createMany($validated['expenses']);
+        $this->persistExpenses($request->user(), $validated['expenses']);
 
         $count = count($validated['expenses']);
 
@@ -209,6 +215,54 @@ class ExpenseController extends Controller
         ]);
 
         return $pdf->download('monthly-expenses-' . $monthStart->format('Y-m') . '.pdf');
+    }
+
+    protected function persistExpenses($user, array $rows): void
+    {
+        try {
+            $user->expenses()->createMany($rows);
+            return;
+        } catch (QueryException $exception) {
+            if (!$this->isLegacyEncryptedDecimalInsertError($exception)) {
+                throw $exception;
+            }
+        }
+
+        // Fallback for hosts still running legacy decimal schema on expenses.price.
+        $timestamp = now();
+
+        $insertRows = collect($rows)
+            ->map(function (array $row) use ($user, $timestamp) {
+                return [
+                    'user_id' => $user->id,
+                    'product_name' => (string) $row['product_name'],
+                    'price' => number_format((float) $row['price'], 2, '.', ''),
+                    'type' => $row['type'],
+                    'date' => Carbon::parse($row['date'])->toDateString(),
+                    'created_at' => $timestamp,
+                    'updated_at' => $timestamp,
+                ];
+            })
+            ->all();
+
+        DB::table('expenses')->insert($insertRows);
+    }
+
+    protected function isLegacyEncryptedDecimalInsertError(QueryException $exception): bool
+    {
+        $message = strtolower($exception->getMessage());
+
+        if (!str_contains($message, 'expenses')) {
+            return false;
+        }
+
+        $hasLegacyPriceError = str_contains($message, 'incorrect decimal value')
+            && str_contains($message, 'price');
+
+        $hasLegacyProductError = str_contains($message, 'data too long')
+            && str_contains($message, 'product_name');
+
+        return $hasLegacyPriceError || $hasLegacyProductError;
     }
 
     protected function monthBudgetStatus($user, Carbon $date): ?array

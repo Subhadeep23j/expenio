@@ -349,42 +349,41 @@
     </div>
 
     @php
-        $hasBulkExpenseRoute = \Illuminate\Support\Facades\Route::has('expenses.store-bulk');
+        $bulkExpenseAction = route('expenses.store');
     @endphp
 
     <!-- Bulk Add Expense -->
-    @if ($hasBulkExpenseRoute)
-        <div class="card bulk-card" style="margin-bottom: 2rem;">
-            <div class="bulk-head">
-                <div>
-                    <div class="card-title" style="margin-bottom: 0.35rem;">Bulk Add Expenses</div>
-                    <div class="card-sub">Add many expenses quickly in one submission.</div>
-                </div>
-                <div class="bulk-count-pill" id="bulk-row-count">0 rows</div>
+    <div class="card bulk-card" style="margin-bottom: 2rem;">
+        <div class="bulk-head">
+            <div>
+                <div class="card-title" style="margin-bottom: 0.35rem;">Bulk Add Expenses</div>
+                <div class="card-sub">Add many expenses quickly in one submission.</div>
             </div>
+            <div class="bulk-count-pill" id="bulk-row-count">0 rows</div>
+        </div>
 
-            <div class="bulk-tip">Tip: Use <strong>Duplicate</strong> when entries are similar, then adjust only amount or
-                name.</div>
+        <div class="bulk-tip">Tip: Use <strong>Duplicate</strong> when entries are similar, then adjust only amount or
+            name.</div>
 
-            @php
-                $oldBulkRows = old('expenses');
-                $bulkRows =
-                    is_array($oldBulkRows) && count($oldBulkRows) > 0
-                        ? $oldBulkRows
-                        : [
-                            [
-                                'product_name' => '',
-                                'price' => '',
-                                'date' => $today->toDateString(),
-                                'type' => 'offline',
-                            ],
-                        ];
-            @endphp
+        @php
+            $oldBulkRows = old('expenses');
+            $bulkRows =
+                is_array($oldBulkRows) && count($oldBulkRows) > 0
+                    ? $oldBulkRows
+                    : [
+                        [
+                            'product_name' => '',
+                            'price' => '',
+                            'date' => $today->toDateString(),
+                            'type' => 'offline',
+                        ],
+                    ];
+        @endphp
 
-            <form method="POST" action="{{ route('expenses.store-bulk') }}" id="bulk-expense-form">
-                @csrf
+        <form method="POST" action="{{ $bulkExpenseAction }}" id="bulk-expense-form">
+            @csrf
 
-                {{-- <div class="bulk-toolbar">
+            {{-- <div class="bulk-toolbar">
                 <button type="button" class="btn-submit bulk-btn-outline" id="add-bulk-row">
                     + Add Row
                 </button>
@@ -396,108 +395,100 @@
                 </button>
             </div> --}}
 
-                <div id="bulk-expense-rows" class="bulk-rows">
-                    @foreach ($bulkRows as $index => $bulkExpense)
-                        <div data-row class="bulk-row">
-                            <div class="bulk-row-head">
-                                <div data-row-label class="bulk-row-label">
-                                    Row {{ $loop->iteration }}
-                                </div>
-
-                                <div class="bulk-row-actions">
-                                    <button type="button" title="Duplicate row" class="bulk-icon-btn"
-                                        data-duplicate-row>
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <rect x="9" y="9" width="13" height="13" rx="2"
-                                                ry="2" />
-                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                                        </svg>
-                                    </button>
-
-                                    <button type="button" title="Remove row" class="bulk-icon-btn bulk-icon-btn-danger"
-                                        data-remove-row>
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <line x1="18" y1="6" x2="6" y2="18" />
-                                            <line x1="6" y1="6" x2="18" y2="18" />
-                                        </svg>
-                                    </button>
-                                </div>
+            <div id="bulk-expense-rows" class="bulk-rows">
+                @foreach ($bulkRows as $index => $bulkExpense)
+                    <div data-row class="bulk-row">
+                        <div class="bulk-row-head">
+                            <div data-row-label class="bulk-row-label">
+                                Row {{ $loop->iteration }}
                             </div>
 
-                            <div class="bulk-row-grid">
-                                <div>
-                                    <label class="form-label" data-field-label="product_name"
-                                        for="bulk_product_name_{{ $index }}">Product / Service Name</label>
-                                    <input type="text" class="form-input" data-field="product_name"
-                                        id="bulk_product_name_{{ $index }}"
-                                        name="expenses[{{ $index }}][product_name]"
-                                        value="{{ $bulkExpense['product_name'] ?? '' }}" required
-                                        placeholder="e.g. Coffee, Cab Fare, Snacks">
-                                </div>
+                            <div class="bulk-row-actions">
+                                <button type="button" title="Duplicate row" class="bulk-icon-btn" data-duplicate-row>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                    </svg>
+                                </button>
 
-                                <div>
-                                    <label class="form-label" data-field-label="price"
-                                        for="bulk_price_{{ $index }}">Amount (₹)</label>
-                                    <input type="number" class="form-input" data-field="price"
-                                        id="bulk_price_{{ $index }}" name="expenses[{{ $index }}][price]"
-                                        value="{{ $bulkExpense['price'] ?? '' }}" required step="0.01" min="0.01"
-                                        placeholder="0.00">
-                                </div>
-
-                                <div>
-                                    <label class="form-label" data-field-label="date"
-                                        for="bulk_date_{{ $index }}">Date</label>
-                                    <input type="date" class="form-input" data-field="date"
-                                        id="bulk_date_{{ $index }}" name="expenses[{{ $index }}][date]"
-                                        value="{{ $bulkExpense['date'] ?? $today->toDateString() }}" required
-                                        max="{{ $today->toDateString() }}">
-                                </div>
-
-                                <div>
-                                    <label class="form-label" data-field-label="type"
-                                        for="bulk_type_{{ $index }}">Purchase Type</label>
-                                    <select class="form-input" data-field="type" id="bulk_type_{{ $index }}"
-                                        name="expenses[{{ $index }}][type]" required>
-                                        <option value="offline"
-                                            {{ ($bulkExpense['type'] ?? 'offline') === 'offline' ? 'selected' : '' }}>
-                                            Offline
-                                        </option>
-                                        <option value="online"
-                                            {{ ($bulkExpense['type'] ?? 'offline') === 'online' ? 'selected' : '' }}>Online
-                                        </option>
-                                    </select>
-                                </div>
+                                <button type="button" title="Remove row" class="bulk-icon-btn bulk-icon-btn-danger"
+                                    data-remove-row>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <line x1="18" y1="6" x2="6" y2="18" />
+                                        <line x1="6" y1="6" x2="18" y2="18" />
+                                    </svg>
+                                </button>
                             </div>
                         </div>
-                    @endforeach
-                </div>
 
-                <div class="bulk-submit-wrap">
-                    <button type="button" class="btn-submit bulk-btn-outline" id="add-bulk-row">
-                        + Add Row
-                    </button>
-                    <button type="button" class="btn-submit bulk-btn-outline" id="duplicate-last-row">
-                        Duplicate Last Row
-                    </button>
-                    <button type="button" class="btn-submit bulk-btn-muted" id="clear-bulk-rows">
-                        Clear All
-                    </button>
-                    <button type="submit" class="btn-submit">
-                        Save Bulk Expenses
-                    </button>
-                </div>
-            </form>
-        </div>
-    @else
-        <div class="card" style="margin-bottom: 2rem;">
-            <div class="card-title" style="margin-bottom: 0.35rem;">Bulk Add Expenses</div>
-            <div class="card-sub">Bulk add is temporarily unavailable while server routes are updating.</div>
-        </div>
-    @endif
+                        <div class="bulk-row-grid">
+                            <div>
+                                <label class="form-label" data-field-label="product_name"
+                                    for="bulk_product_name_{{ $index }}">Product / Service Name</label>
+                                <input type="text" class="form-input" data-field="product_name"
+                                    id="bulk_product_name_{{ $index }}"
+                                    name="expenses[{{ $index }}][product_name]"
+                                    value="{{ $bulkExpense['product_name'] ?? '' }}" required
+                                    placeholder="e.g. Coffee, Cab Fare, Snacks">
+                            </div>
+
+                            <div>
+                                <label class="form-label" data-field-label="price"
+                                    for="bulk_price_{{ $index }}">Amount (₹)</label>
+                                <input type="number" class="form-input" data-field="price"
+                                    id="bulk_price_{{ $index }}" name="expenses[{{ $index }}][price]"
+                                    value="{{ $bulkExpense['price'] ?? '' }}" required step="0.01" min="0.01"
+                                    placeholder="0.00">
+                            </div>
+
+                            <div>
+                                <label class="form-label" data-field-label="date"
+                                    for="bulk_date_{{ $index }}">Date</label>
+                                <input type="date" class="form-input" data-field="date"
+                                    id="bulk_date_{{ $index }}" name="expenses[{{ $index }}][date]"
+                                    value="{{ $bulkExpense['date'] ?? $today->toDateString() }}" required
+                                    max="{{ $today->toDateString() }}">
+                            </div>
+
+                            <div>
+                                <label class="form-label" data-field-label="type"
+                                    for="bulk_type_{{ $index }}">Purchase Type</label>
+                                <select class="form-input" data-field="type" id="bulk_type_{{ $index }}"
+                                    name="expenses[{{ $index }}][type]" required>
+                                    <option value="offline"
+                                        {{ ($bulkExpense['type'] ?? 'offline') === 'offline' ? 'selected' : '' }}>
+                                        Offline
+                                    </option>
+                                    <option value="online"
+                                        {{ ($bulkExpense['type'] ?? 'offline') === 'online' ? 'selected' : '' }}>Online
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <div class="bulk-submit-wrap">
+                <button type="button" class="btn-submit bulk-btn-outline" id="add-bulk-row">
+                    + Add Row
+                </button>
+                <button type="button" class="btn-submit bulk-btn-outline" id="duplicate-last-row">
+                    Duplicate Last Row
+                </button>
+                <button type="button" class="btn-submit bulk-btn-muted" id="clear-bulk-rows">
+                    Clear All
+                </button>
+                <button type="submit" class="btn-submit">
+                    Save Bulk Expenses
+                </button>
+            </div>
+        </form>
+    </div>
 
     <!-- Expense Chart -->
     <div class="card" style="margin-bottom: 2rem;">

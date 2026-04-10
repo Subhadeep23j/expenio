@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function () {
     // Expenses
     Route::get('/expenses', [ExpenseController::class, 'index'])->name('expenses.index');
     Route::post('/expenses', [ExpenseController::class, 'store'])->name('expenses.store');
+    Route::post('/expenses/bulk-save', [ExpenseController::class, 'storeBulk'])->name('expenses.bulk-store');
     Route::post('/expenses/bulk', [ExpenseController::class, 'storeBulk'])->name('expenses.store-bulk');
     Route::delete('/expenses/{expense}', [ExpenseController::class, 'destroy'])->name('expenses.destroy');
     Route::get('/expenses/chart-data', [ExpenseController::class, 'chartData'])->name('expenses.chart-data');
