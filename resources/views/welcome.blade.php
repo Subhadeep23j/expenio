@@ -7,7 +7,106 @@
     <title>Expenio - Expense Tracker & Budget Management App</title>
     <meta name="description"
         content="Expenio is a smart expense tracker and budget management app to track daily expenses, monitor income, and manage personal finances easily.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="{{ url('/') }}">
+    <meta name="keywords"
+        content="expense tracker, budget management app, money manager, personal finance tracker, daily expense tracker, income and expense tracker, monthly budget planner, finance app India">
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Expenio - Smart Expense Tracker & Budget Manager">
+    <meta property="og:description"
+        content="Track daily expenses, manage budgets, and control your finances with Expenio. Simple and powerful expense tracker app.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url('/') }}">
+    <meta property="og:image" content="{{ asset('Expenio_logo.png') }}">
+    <meta property="og:site_name" content="Expenio">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Expenio - Expense Tracker App">
+    <meta name="twitter:description"
+        content="Manage your money, track expenses, and plan your budget easily with Expenio.">
+    <meta name="twitter:image" content="{{ asset('Expenio_logo.png') }}">
     <link rel="icon" type="image/png" href="{{ asset('Expenio_logo.png') }}">
+
+    <script type="application/ld+json">
+        {
+            "@@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "Expenio",
+            "applicationCategory": "FinanceApplication",
+            "operatingSystem": "Web",
+            "url": "{{ url('/') }}",
+            "image": "{{ asset('Expenio_logo.png') }}",
+            "description": "Expenio is a web-based expense tracker and budget manager that helps users track spending, monitor income, and plan monthly budgets.",
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "INR"
+            },
+            "featureList": [
+                "Track daily expenses and income",
+                "Set category-wise monthly budgets",
+                "Analyze spending trends and reports",
+                "Export financial summaries"
+            ]
+        }
+    </script>
+
+    <script type="application/ld+json">
+        {
+            "@@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [{
+                    "@type": "Question",
+                    "name": "What is Expenio?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Expenio is a smart expense tracker and budget management app that helps you organize daily spending, monitor income, and improve personal finance decisions."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "How can I track my expenses?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "You can add transactions, assign categories, and review real-time dashboards to track expenses and understand where your money goes."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Is Expenio free?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Yes, Expenio offers a free plan to start tracking expenses and managing budgets right away."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Can I create monthly category budgets?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Yes, you can set monthly category budgets and compare actual spending against each limit."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Can I export expense reports?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Yes, Expenio supports report exports so you can share summaries with your accountant or team."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Is my financial data secure?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Expenio protects your financial data using encryption in transit and at rest."
+                    }
+                }
+            ]
+        }
+    </script>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,7 +115,7 @@
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,500&family=Outfit:wght@300;400;500;600&display=swap"
         rel="stylesheet">
 
-    @vite('resources/css/app.css')
+    <link rel="stylesheet" href="/css/app.css">
 
     <style>
         :root {
@@ -814,6 +913,182 @@
             line-height: 1.65;
         }
 
+        .seo-section {
+            padding: 0 2.5rem 5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .seo-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.35fr) minmax(0, .95fr);
+            gap: 1.25rem;
+            margin-top: 2rem;
+        }
+
+        .seo-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.6rem;
+        }
+
+        .seo-card-highlight {
+            background: radial-gradient(circle at top right, rgba(200, 169, 110, .1), transparent 46%), var(--card);
+        }
+
+        .seo-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            font-weight: 500;
+            line-height: 1.2;
+            color: var(--text);
+            margin-bottom: .7rem;
+        }
+
+        .seo-copy {
+            font-size: .9rem;
+            color: rgba(237, 231, 213, .58);
+            line-height: 1.75;
+        }
+
+        .seo-copy+.seo-copy {
+            margin-top: .8rem;
+        }
+
+        .seo-points {
+            margin-top: 1rem;
+            padding-left: 1rem;
+            display: grid;
+            gap: .4rem;
+        }
+
+        .seo-points li {
+            font-size: .83rem;
+            color: rgba(237, 231, 213, .58);
+            line-height: 1.5;
+        }
+
+        .seo-points li::marker {
+            color: var(--accent);
+        }
+
+        .seo-metrics {
+            margin-top: 1rem;
+            display: grid;
+            gap: .7rem;
+        }
+
+        .metric-chip {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: .7rem .8rem;
+            background: rgba(255, 255, 255, .015);
+        }
+
+        .metric-value {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        .metric-label {
+            font-size: .72rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            margin-top: .3rem;
+        }
+
+        #pricing {
+            padding: 0 2.5rem 5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1.25rem;
+            margin-top: 2rem;
+        }
+
+        .pricing-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.6rem;
+            display: flex;
+            flex-direction: column;
+            gap: .85rem;
+        }
+
+        .pricing-card.featured {
+            border-color: rgba(200, 169, 110, .35);
+            background: radial-gradient(circle at top right, rgba(200, 169, 110, .16), transparent 52%), var(--card);
+        }
+
+        .pricing-tag {
+            width: fit-content;
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: 99px;
+            padding: .22rem .7rem;
+            font-size: .68rem;
+            text-transform: uppercase;
+            letter-spacing: .09em;
+            color: rgba(237, 231, 213, .72);
+        }
+
+        .price-row {
+            display: flex;
+            align-items: flex-end;
+            gap: .3rem;
+        }
+
+        .price-amount {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.3rem;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        .price-period {
+            font-size: .82rem;
+            color: var(--muted);
+            margin-bottom: .3rem;
+        }
+
+        .pricing-desc {
+            font-size: .86rem;
+            color: rgba(237, 231, 213, .55);
+            line-height: 1.65;
+        }
+
+        .pricing-list {
+            margin-top: .2rem;
+            padding-left: 1rem;
+            display: grid;
+            gap: .4rem;
+            flex: 1;
+        }
+
+        .pricing-list li {
+            font-size: .83rem;
+            color: rgba(237, 231, 213, .62);
+            line-height: 1.5;
+        }
+
+        .pricing-list li::marker {
+            color: var(--green);
+        }
+
+        .pricing-card .btn {
+            margin-top: .35rem;
+            width: fit-content;
+        }
+
         /* ── CTA section ── */
         #cta {
             margin: 2rem 2.5rem 5rem;
@@ -872,6 +1147,16 @@
             justify-content: center;
             gap: 1rem;
             flex-wrap: wrap;
+        }
+
+        .faq-section {
+            padding: 0 2.5rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .faq-grid {
+            margin-top: 0;
         }
 
         /* ── Footer ── */
@@ -948,6 +1233,11 @@
             .features-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+
+            .seo-grid,
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 600px) {
@@ -1010,9 +1300,17 @@
             }
 
             #features,
-            #cta {
+            #cta,
+            .faq-section,
+            .seo-section,
+            #pricing {
                 padding-left: 1.25rem;
                 padding-right: 1.25rem;
+            }
+
+            .pricing-card .btn {
+                width: 100%;
+                justify-content: center;
             }
 
             #cta {
@@ -1328,6 +1626,63 @@
         </div>
     </section>
 
+    <section class="seo-section">
+        <div style="text-align:center; margin-bottom:1rem;">
+            <div class="section-label">Money management made practical</div>
+            <h2 class="section-title" style="max-width:760px;margin:0 auto .75rem;">
+                A complete expense tracker for daily spending, monthly budgeting, and long-term financial planning
+            </h2>
+            <p class="section-sub" style="margin:0 auto;max-width:760px;">
+                Expenio combines expense tracking, income monitoring, and budget planning in one clean dashboard so
+                you can make smarter money decisions without spreadsheets or manual bookkeeping.
+            </p>
+        </div>
+
+        <div class="seo-grid">
+            <article class="seo-card">
+                <h3 class="seo-title">Designed for real life money goals</h3>
+                <p class="seo-copy">
+                    Whether you are a student managing pocket money, a freelancer tracking variable income, or a family
+                    planning monthly expenses, Expenio gives you a fast way to record every transaction and understand
+                    spending patterns.
+                </p>
+                <p class="seo-copy">
+                    Instead of guessing where money goes, you get category-level visibility, budget alerts, and clear
+                    summaries that help you reduce waste and improve savings month after month.
+                </p>
+                <ul class="seo-points">
+                    <li>Track daily expenses with categories like food, transport, bills, shopping, and health.</li>
+                    <li>Compare your planned budget with actual spending in real time.</li>
+                    <li>Monitor income and expenses together to understand your cash flow.</li>
+                    <li>Review monthly reports to improve budgeting and build better financial habits.</li>
+                </ul>
+            </article>
+
+            <article class="seo-card seo-card-highlight">
+                <h3 class="seo-title">Why users keep coming back</h3>
+                <p class="seo-copy">
+                    Expenio is focused on speed, clarity, and consistency. The interface stays simple, while analytics
+                    remain detailed enough for serious personal finance tracking.
+                </p>
+
+                <div class="seo-metrics">
+                    <div class="metric-chip">
+                        <div class="metric-value">3 min</div>
+                        <div class="metric-label">Average setup time</div>
+                    </div>
+                    <div class="metric-chip">
+                        <div class="metric-value">30+ days</div>
+                        <div class="metric-label">Trend visibility window</div>
+                    </div>
+                    <div class="metric-chip">
+                        <div class="metric-value">100%</div>
+                        <div class="metric-label">User-controlled categories</div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
 
     <!-- ═══════════════════════════════════════════
      FEATURES
@@ -1429,6 +1784,62 @@
         </div>
     </section>
 
+    <section id="pricing">
+        <div style="text-align:center; margin-bottom:1rem;">
+            <div class="section-label">Simple pricing</div>
+            <h2 class="section-title" style="max-width:620px;margin:0 auto .75rem;">
+                Start free today and scale your budget workflow as you grow
+            </h2>
+            <p class="section-sub" style="margin:0 auto;max-width:700px;">
+                Expenio is built to be accessible for everyone. Begin with the free expense tracker, then move to
+                advanced workflows when you need deeper automation and reporting.
+            </p>
+        </div>
+
+        <div class="pricing-grid">
+            <article class="pricing-card">
+                <div class="pricing-tag">Starter</div>
+                <div class="price-row">
+                    <div class="price-amount">INR 0</div>
+                    <div class="price-period">per month</div>
+                </div>
+                <p class="pricing-desc">
+                    Perfect for individuals who want a reliable daily expense tracker and budget manager without any
+                    upfront cost.
+                </p>
+                <ul class="pricing-list">
+                    <li>Unlimited income and expense entries</li>
+                    <li>Custom categories and monthly budgets</li>
+                    <li>Dashboard insights and trend snapshots</li>
+                    <li>Basic report exports</li>
+                </ul>
+                @if (Route::has('register'))
+                    <a href="{{ route('register') }}" class="btn btn-ghost">Create free account</a>
+                @endif
+            </article>
+
+            <article class="pricing-card featured">
+                <div class="pricing-tag">Growth (Coming soon)</div>
+                <div class="price-row">
+                    <div class="price-amount">Early access</div>
+                </div>
+                <p class="pricing-desc">
+                    For users who want deeper analytics, richer reports, and smarter planning features for long-term
+                    financial control.
+                </p>
+                <ul class="pricing-list">
+                    <li>Advanced monthly and yearly financial reports</li>
+                    <li>Automated budget alerts and anomaly detection</li>
+                    <li>Category performance insights and benchmarks</li>
+                    <li>Priority support and roadmap previews</li>
+                </ul>
+                @if (Route::has('register'))
+                    <a href="{{ route('register') }}" class="btn btn-primary">Join early access</a>
+                @endif
+            </article>
+        </div>
+    </section>
+
 
     <!-- ═══════════════════════════════════════════
      CTA
@@ -1461,15 +1872,19 @@
         </div>
     </div>
 
-    <section style="padding: 0 2.5rem 4rem; max-width: 1200px; margin: 0 auto;">
+    <section class="faq-section">
         <div style="text-align:center; margin-bottom:1.75rem;">
             <div class="section-label">FAQ</div>
             <h2 class="section-title" style="margin:0 auto .75rem;max-width:560px;">
                 Frequently Asked Questions
             </h2>
+            <p class="section-sub" style="margin:0 auto;max-width:720px;">
+                Answers to common questions about using Expenio as your daily expense tracker, monthly budget planner,
+                and personal finance dashboard.
+            </p>
         </div>
 
-        <div class="features-grid" style="grid-template-columns:repeat(3, 1fr); margin-top:0;">
+        <div class="features-grid faq-grid">
             <div class="feature-card">
                 <div class="feature-title">What is Expenio?</div>
                 <div class="feature-desc">Expenio is a smart expense tracker and budget management app that helps you
@@ -1487,6 +1902,24 @@
                 <div class="feature-desc">Yes, Expenio offers a free plan so you can start tracking expenses and
                     managing
                     budgets right away, with options to upgrade as your needs grow.</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-title">Can I set monthly budgets by category?</div>
+                <div class="feature-desc">Yes, you can define budget limits for categories like food, travel,
+                    shopping, and bills, then monitor progress through visual budget bars and trend summaries.</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-title">Can I export my finance reports?</div>
+                <div class="feature-desc">Yes, Expenio supports report exports so you can review monthly performance,
+                    share summaries with your accountant, or keep records for planning and audits.</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-title">Is my data secure in Expenio?</div>
+                <div class="feature-desc">Your financial information is protected using encryption and secure access
+                    controls. Expenio is designed to keep your expense and income data private.</div>
             </div>
         </div>
     </section>
