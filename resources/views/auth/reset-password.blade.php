@@ -16,18 +16,11 @@
                     <line x1="2" y1="10" x2="22" y2="10" />
                 </svg>
             </div>
-            <h1 class="serif" style="font-size: 1.75rem; margin: 0 0 0.25rem; color: var(--text);">Welcome Back</h1>
-            <p style="font-size: 0.875rem; color: var(--muted); margin: 0;">Sign in to your account</p>
+            <h1 class="serif" style="font-size: 1.75rem; margin: 0 0 0.25rem; color: var(--text);">Reset Password</h1>
+            <p style="font-size: 0.875rem; color: var(--muted); margin: 0;">Enter the OTP and your new password</p>
         </div>
 
         <!-- Flash Messages -->
-        @if (session('error'))
-            <div
-                style="background: #fdecea; border-left: 4px solid #e05a42; color: #7a2010; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.875rem; margin-bottom: 1.5rem;">
-                {{ session('error') }}
-            </div>
-        @endif
-
         @if (session('status'))
             <div
                 style="background: #e7f6ec; border-left: 4px solid #3aa76d; color: #1f5b3b; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.875rem; margin-bottom: 1.5rem;">
@@ -44,8 +37,8 @@
             </div>
         @endif
 
-        <!-- Login Form -->
-        <form method="POST" action="{{ route('login') }}">
+        <!-- Reset Form -->
+        <form method="POST" action="{{ route('password.update') }}">
             @csrf
 
             <!-- Email -->
@@ -54,17 +47,31 @@
                     style="display: block; font-size: 0.875rem; font-weight: 500; color: var(--text); margin-bottom: 0.5rem;">
                     Email Address
                 </label>
-                <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus
+                <input type="email" id="email" name="email" value="{{ old('email', $email ?? '') }}" required
+                    autofocus
                     style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9375rem; background: var(--surface); color: var(--text); transition: border-color 0.15s;"
                     onfocus="this.style.borderColor='var(--accent)'; this.style.outline='none'"
                     onblur="this.style.borderColor='var(--border)'">
             </div>
 
-            <!-- Password -->
-            <div style="margin-bottom: 1.5rem;">
+            <!-- OTP -->
+            <div style="margin-bottom: 1.25rem;">
+                <label for="otp"
+                    style="display: block; font-size: 0.875rem; font-weight: 500; color: var(--text); margin-bottom: 0.5rem;">
+                    6-Digit OTP
+                </label>
+                <input type="text" id="otp" name="otp" value="{{ old('otp') }}" required
+                    inputmode="numeric" autocomplete="one-time-code"
+                    style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9375rem; background: var(--surface); color: var(--text); transition: border-color 0.15s;"
+                    onfocus="this.style.borderColor='var(--accent)'; this.style.outline='none'"
+                    onblur="this.style.borderColor='var(--border)'">
+            </div>
+
+            <!-- New Password -->
+            <div style="margin-bottom: 1.25rem;">
                 <label for="password"
                     style="display: block; font-size: 0.875rem; font-weight: 500; color: var(--text); margin-bottom: 0.5rem;">
-                    Password
+                    New Password
                 </label>
                 <input type="password" id="password" name="password" required
                     style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9375rem; background: var(--surface); color: var(--text); transition: border-color 0.15s;"
@@ -72,19 +79,16 @@
                     onblur="this.style.borderColor='var(--border)'">
             </div>
 
-            <!-- Remember Me & Forgot Password -->
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
-                <label
-                    style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--text); cursor: pointer;">
-                    <input type="checkbox" name="remember" style="width: 16px; height: 16px; cursor: pointer;">
-                    Remember me
+            <!-- Confirm Password -->
+            <div style="margin-bottom: 1.5rem;">
+                <label for="password_confirmation"
+                    style="display: block; font-size: 0.875rem; font-weight: 500; color: var(--text); margin-bottom: 0.5rem;">
+                    Confirm Password
                 </label>
-                @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}"
-                        style="font-size: 0.875rem; color: var(--accent); text-decoration: none;">
-                        Forgot password?
-                    </a>
-                @endif
+                <input type="password" id="password_confirmation" name="password_confirmation" required
+                    style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9375rem; background: var(--surface); color: var(--text); transition: border-color 0.15s;"
+                    onfocus="this.style.borderColor='var(--accent)'; this.style.outline='none'"
+                    onblur="this.style.borderColor='var(--border)'">
             </div>
 
             <!-- Submit Button -->
@@ -92,23 +96,19 @@
                 style="width: 100%; padding: 0.875rem; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 0.9375rem; font-weight: 500; cursor: pointer; transition: background 0.15s;"
                 onmouseover="this.style.background='var(--accent-lt)'"
                 onmouseout="this.style.background='var(--accent)'">
-                Sign In
+                Reset Password
             </button>
         </form>
 
-        <!-- Register Link -->
-        @if (Route::has('register'))
-            <div
-                style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
-                <p style="font-size: 0.875rem; color: var(--muted); margin: 0;">
-                    Don't have an account?
-                    <a href="{{ route('register') }}"
-                        style="color: var(--accent); text-decoration: none; font-weight: 500;">
-                        Sign up
-                    </a>
-                </p>
-            </div>
-        @endif
+        <!-- Back to Login -->
+        <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+            <p style="font-size: 0.875rem; color: var(--muted); margin: 0;">
+                Remembered your password?
+                <a href="{{ route('login') }}" style="color: var(--accent); text-decoration: none; font-weight: 500;">
+                    Sign in
+                </a>
+            </p>
+        </div>
 
     </div>
 

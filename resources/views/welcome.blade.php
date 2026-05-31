@@ -1192,6 +1192,135 @@
             color: var(--text);
         }
 
+        /* ── Page loader ── */
+        #page-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 1200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                radial-gradient(circle at 18% 20%, rgba(200, 169, 110, .23), transparent 44%),
+                radial-gradient(circle at 85% 80%, rgba(78, 140, 98, .2), transparent 41%),
+                linear-gradient(155deg, rgba(21, 19, 16, .95), rgba(9, 8, 6, .97));
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            transition: opacity .45s ease, visibility .45s ease;
+        }
+
+        #page-loader.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loader-wrap {
+            display: grid;
+            place-items: center;
+            gap: .95rem;
+        }
+
+        .loader-logo-shell {
+            position: relative;
+            width: 128px;
+            height: 128px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, .14);
+        }
+
+        .loader-ring-a {
+            inset: 0;
+            border-top-color: var(--accent);
+            border-right-color: rgba(200, 169, 110, .55);
+            animation: loaderSpin 1.75s linear infinite;
+        }
+
+        .loader-ring-b {
+            inset: 12px;
+            border-left-color: var(--green);
+            border-bottom-color: rgba(78, 140, 98, .6);
+            animation: loaderSpinReverse 1.25s linear infinite;
+        }
+
+        .loader-logo-box {
+            position: relative;
+            z-index: 2;
+            width: 66px;
+            height: 66px;
+            border-radius: 16px;
+            background: linear-gradient(145deg, #5f9f74, var(--green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 16px 35px rgba(0, 0, 0, .38), inset 0 1px 0 rgba(255, 255, 255, .2);
+            animation: logoBreath 1.55s ease-in-out infinite;
+        }
+
+        .loader-logo-svg {
+            width: 32px;
+            height: 32px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 86;
+            stroke-dashoffset: 86;
+            animation: logoDraw 1.15s ease-in-out infinite alternate;
+        }
+
+        .loader-caption {
+            font-size: .74rem;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            color: rgba(237, 231, 213, .62);
+            text-align: center;
+        }
+
+        @keyframes loaderSpin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes loaderSpinReverse {
+            to {
+                transform: rotate(-360deg);
+            }
+        }
+
+        @keyframes logoBreath {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+
+            50% {
+                transform: translateY(-4px) scale(1.05);
+            }
+        }
+
+        @keyframes logoDraw {
+            from {
+                stroke-dashoffset: 86;
+                opacity: .74;
+            }
+
+            to {
+                stroke-dashoffset: 0;
+                opacity: 1;
+            }
+        }
+
         /* ── Responsive ── */
         @media (max-width: 900px) {
             nav#navbar {
@@ -1259,6 +1388,26 @@
             .brand-icon {
                 width: 30px;
                 height: 30px;
+            }
+
+            .loader-logo-shell {
+                width: 104px;
+                height: 104px;
+            }
+
+            .loader-ring-b {
+                inset: 10px;
+            }
+
+            .loader-logo-box {
+                width: 56px;
+                height: 56px;
+                border-radius: 14px;
+            }
+
+            .loader-logo-svg {
+                width: 27px;
+                height: 27px;
             }
 
             #hero {
@@ -1359,9 +1508,32 @@
             }
         }
     </style>
+    <noscript>
+        <style>
+            #page-loader {
+                display: none;
+            }
+        </style>
+    </noscript>
 </head>
 
 <body>
+
+    <div id="page-loader" role="status" aria-live="polite" aria-label="Loading Expenio">
+        <div class="loader-wrap">
+            <div class="loader-logo-shell" aria-hidden="true">
+                <span class="loader-ring loader-ring-a"></span>
+                <span class="loader-ring loader-ring-b"></span>
+                <div class="loader-logo-box">
+                    <svg class="loader-logo-svg" viewBox="0 0 24 24">
+                        <rect x="2" y="5" width="20" height="14" rx="2" />
+                        <line x1="2" y1="10" x2="22" y2="10" />
+                    </svg>
+                </div>
+            </div>
+            <div class="loader-caption">Preparing your dashboard</div>
+        </div>
+    </div>
 
     <!-- ═══════════════════════════════════════════
      NAVBAR
@@ -1387,7 +1559,8 @@
         <div class="nav-auth">
             @if (Route::has('login'))
                 @auth
-                    <a href="{{ url('/dashboard') }}" class="btn btn-ghost" style="padding:.45rem .95rem;font-size:.82rem">
+                    <a href="{{ url('/dashboard') }}" class="btn btn-ghost"
+                        style="padding:.45rem .95rem;font-size:.82rem">
                         Dashboard
                     </a>
                 @else
@@ -1939,6 +2112,75 @@
     </footer>
 
     <script>
+        (function() {
+            const loader = document.getElementById('page-loader');
+            if (!loader) return;
+
+            let isHidden = false;
+            const hardTimeoutMs = 15000;
+
+            const showLoader = function() {
+                isHidden = false;
+                loader.classList.remove('is-hidden');
+                loader.setAttribute('aria-hidden', 'false');
+            };
+
+            const hideLoader = function() {
+                if (isHidden) return;
+
+                isHidden = true;
+                loader.classList.add('is-hidden');
+                loader.setAttribute('aria-hidden', 'true');
+            };
+
+            if (document.readyState === 'complete') {
+                window.requestAnimationFrame(hideLoader);
+            } else {
+                window.addEventListener('load', hideLoader, {
+                    once: true
+                });
+            }
+
+            window.setTimeout(hideLoader, hardTimeoutMs);
+
+            document.addEventListener('click', function(event) {
+                const link = event.target.closest('a[href]');
+                if (!link) {
+                    return;
+                }
+
+                if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event
+                    .shiftKey || event.altKey) {
+                    return;
+                }
+
+                if (link.target === '_blank' || link.hasAttribute('download')) {
+                    return;
+                }
+
+                const href = link.getAttribute('href') || '';
+                if (!href || href.startsWith('#') || href.startsWith('javascript:')) {
+                    return;
+                }
+
+                const nextUrl = new URL(link.href, window.location.href);
+                if (nextUrl.origin !== window.location.origin) {
+                    return;
+                }
+
+                showLoader();
+            });
+
+            document.addEventListener('submit', function(event) {
+                const form = event.target;
+                if (!(form instanceof HTMLFormElement)) {
+                    return;
+                }
+
+                showLoader();
+            });
+        })();
+
         (function() {
             const menuBtn = document.getElementById('mobile-menu-btn');
             const mobileNav = document.getElementById('mobile-nav');

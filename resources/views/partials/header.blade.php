@@ -850,9 +850,185 @@
     </style>
 
     @stack('styles')
+
+    <style>
+        #global-page-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                radial-gradient(circle at 18% 20%, rgba(184, 137, 42, .2), transparent 44%),
+                radial-gradient(circle at 85% 80%, rgba(90, 148, 112, .2), transparent 41%),
+                linear-gradient(155deg, rgba(20, 18, 14, .94), rgba(9, 8, 6, .97));
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            transition: opacity .35s ease, visibility .35s ease;
+        }
+
+        #global-page-loader.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .global-loader-wrap {
+            display: grid;
+            place-items: center;
+            gap: .85rem;
+        }
+
+        .global-loader-logo-shell {
+            position: relative;
+            width: 124px;
+            height: 124px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .global-loader-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, .16);
+        }
+
+        .global-loader-ring-a {
+            inset: 0;
+            border-top-color: var(--gold);
+            border-right-color: rgba(184, 137, 42, .5);
+            animation: globalLoaderSpin 1.75s linear infinite;
+        }
+
+        .global-loader-ring-b {
+            inset: 12px;
+            border-left-color: var(--accent-lt);
+            border-bottom-color: rgba(90, 148, 112, .58);
+            animation: globalLoaderSpinReverse 1.2s linear infinite;
+        }
+
+        .global-loader-logo-box {
+            position: relative;
+            z-index: 2;
+            width: 64px;
+            height: 64px;
+            border-radius: 15px;
+            background: linear-gradient(145deg, #4a7f5f, var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 16px 35px rgba(0, 0, 0, .34), inset 0 1px 0 rgba(255, 255, 255, .22);
+            animation: globalLogoBreath 1.55s ease-in-out infinite;
+        }
+
+        .global-loader-logo-svg {
+            width: 30px;
+            height: 30px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 86;
+            stroke-dashoffset: 86;
+            animation: globalLogoDraw 1.1s ease-in-out infinite alternate;
+        }
+
+        .global-loader-caption {
+            font-size: .7rem;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            color: rgba(240, 234, 216, .72);
+            text-align: center;
+        }
+
+        @keyframes globalLoaderSpin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes globalLoaderSpinReverse {
+            to {
+                transform: rotate(-360deg);
+            }
+        }
+
+        @keyframes globalLogoBreath {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+
+            50% {
+                transform: translateY(-4px) scale(1.05);
+            }
+        }
+
+        @keyframes globalLogoDraw {
+            from {
+                stroke-dashoffset: 86;
+                opacity: .72;
+            }
+
+            to {
+                stroke-dashoffset: 0;
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .global-loader-logo-shell {
+                width: 104px;
+                height: 104px;
+            }
+
+            .global-loader-ring-b {
+                inset: 10px;
+            }
+
+            .global-loader-logo-box {
+                width: 54px;
+                height: 54px;
+                border-radius: 13px;
+            }
+
+            .global-loader-logo-svg {
+                width: 26px;
+                height: 26px;
+            }
+        }
+    </style>
+
+    <noscript>
+        <style>
+            #global-page-loader {
+                display: none;
+            }
+        </style>
+    </noscript>
 </head>
 
 <body style="min-height:100vh;">
+
+    <div id="global-page-loader" role="status" aria-live="polite" aria-label="Loading Expenio">
+        <div class="global-loader-wrap">
+            <div class="global-loader-logo-shell" aria-hidden="true">
+                <span class="global-loader-ring global-loader-ring-a"></span>
+                <span class="global-loader-ring global-loader-ring-b"></span>
+                <div class="global-loader-logo-box">
+                    <svg class="global-loader-logo-svg" viewBox="0 0 24 24">
+                        <rect x="2" y="5" width="20" height="14" rx="2" />
+                        <line x1="2" y1="10" x2="22" y2="10" />
+                    </svg>
+                </div>
+            </div>
+            <div class="global-loader-caption">Loading Expenio</div>
+        </div>
+    </div>
 
     <!-- ═══════════════════════════════════════════
      SIDEBAR
